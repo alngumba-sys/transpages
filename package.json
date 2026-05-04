@@ -1,0 +1,12 @@
+{
+  "name": "tranpages",
+  "version": "1.0.0",
+  "description": "Tranpages Translation Platform",
+  "scripts": {
+    "build": "echo 'No build step required'"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0"
+  },
+  "devDependencies": {}
+}
