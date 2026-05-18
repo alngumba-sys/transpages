@@ -1,0 +1,39 @@
+# netlify.toml — Tranpages
+[build]
+  publish = "."
+  command = "echo 'No build step — static + functions'"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  # Bundle external deps so pdf-lib + supabase-js work in functions
+  external_node_modules = ["@sparticuz/chromium", "puppeteer-core", "pdfjs-dist"]
+  # @sparticuz/chromium ships a binary; bundling fails. External keeps it on disk.
+  included_files = ["node_modules/@sparticuz/chromium/**"]
+
+# Background functions are auto-detected by name suffix `-background.js`
+# - coordinator-background.js   (15-min budget)
+# - chunk-worker-background.js  (15-min budget)
+
+# Standard sync functions:
+# - translate.js     (legacy / direct text endpoint, kept for backward compat)
+# - jobs-create.js   (creates a job, returns immediately)
+# - jobs-status.js   (polled by frontend)
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+
+# Don't cache the main HTML so users always get fresh code
+[[headers]]
+  for = "/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/"
+  [headers.values]
+    Cache-Control = "no-cache"
